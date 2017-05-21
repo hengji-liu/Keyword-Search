@@ -22,8 +22,8 @@ class Dict
         void output(string s);
     protected:
     private:
-        // term count
-        int itemNum;
+        // # of terms 
+        int termsNum;
         // <term, termID> mapping
         map<string, int> mp;
         // posting list for every term

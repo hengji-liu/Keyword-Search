@@ -2,7 +2,7 @@
 
 Dict::Dict()
 {
-    itemNum = 0;
+    termsNum = 0;
     list.clear();
     mp.clear();
     df.clear();
@@ -11,6 +11,28 @@ Dict::Dict()
 Dict::~Dict()
 {
     //dtor
+}
+
+void Dict::push(int termID, int docID) {
+    // new indexList if a new term
+    if (termID == (int)list.size()) {
+        IndexList il;
+        list.push_back(il);
+        df.push_back(0);
+    }
+    // TODO: indexList should also store term frequency
+    list[termID].push(docID); 
+    df[termID] = df[termID] + 1;
+}
+
+void Dict::insert(string term, int docID) {
+    int termID;
+    if ((termID = find(term)) != -1) { // termID is in the dict
+        push(termID, docID);
+    } else {
+        push(termsNum, docID);
+        mp[term] = termsNum++; // <term, termID>
+    }
 }
 
 void Dict::output(string s) {
@@ -23,30 +45,13 @@ void Dict::output(string s) {
     }
     cout<<endl;
 }
-void Dict::push(int id, int docID) {
-    //cout<<id<<" "<<docID<<endl;
-    if (id == (int)list.size()) { // new indexList for a new term
-        IndexList il;
-        list.push_back(il);
-        df.push_back(0);
-    }
-    list[id].push(docID);
-    df[id] = df[id] + 1;
-}
+
 int Dict::find(string term) {
     map<string, int>::iterator it = mp.find(term);
     if (it != mp.end()) return it->second;
     else return -1;
 }
-void Dict::insert(string term, int docID) {
-    int id;
-    if ((id = find(term)) != -1) { // termId is in the dict
-        push(id, docID);
-    } else {
-        mp[term] = itemNum++;
-        push(itemNum - 1, docID);
-    }
-}
+
 void Dict::writeToFile(char *indexName) {
 
     ofstream out(indexName, ios::binary|ios::out);

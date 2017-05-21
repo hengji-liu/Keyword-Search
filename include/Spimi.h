@@ -33,11 +33,11 @@ class Spimi
         CompressedDict cd;
         Util util;
         Merger merger;
-        int accumTermCnt;
+        int accumTermsNum;
         int threshold;
         int docID;
         void processDoc();
-        void updateDict(set<string>& s);
+        void updateDict(vector<string>& v);
         string trim(string& str);
 };
 

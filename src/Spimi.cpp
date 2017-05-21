@@ -4,8 +4,8 @@ Spimi::Spimi()
 {
     threshold = 3;
     docID = 0;
-    accumTermCnt = 0;
-}
+    accumTermsNum = 0;
+    }
 Spimi::~Spimi()
 {
     //dtor
@@ -13,10 +13,9 @@ Spimi::~Spimi()
 int Spimi::getDocNum() {
     return docID;
 }
-void Spimi::updateDict(set<string> &s) {
-    //cout<<"updateDict"<<endl;
-    set<string>::iterator it = s.begin();
-    for (; it != s.end(); it++) {
+void Spimi::updateDict(vector<string> &v) {
+    vector<string>::iterator it = v.begin();
+    for (; it != v.end(); it++) {
         dict.insert(*it, docID);
     }
 }
@@ -40,26 +39,26 @@ string Spimi::trim(string& str) {
 }
 
 void Spimi::processDoc() {
-    set<string> s;
+    vector<string> v;
     string str;
     while(in>>str) {
         str = trim(str);
         if (str == "")
             continue;
-        cout << str << endl;
-        s.insert(str);
-        accumTermCnt++;
-        if (accumTermCnt % threshold == 0) { // write tmp idx file when accumTermCnt exceed the threshold
-            cout << "---" << endl;
-            // updateDict(s);
-            // s.clear();
+        // cout << str << endl;
+        v.push_back(str);
+        accumTermsNum++;
+        // write tmp idx file when accumTermsNum exceed the threshold
+        if (accumTermsNum % threshold == 0) {
+            updateDict(v);
+            v.clear();
             // char name[100];
             // sprintf(name, "./tmp/b%d", docID / splitNum);
             // dict.writeToFile(name);
             // dict.reset();
         }
     }
-    // updateDict(s);
+    updateDict(v);
 }
 
 void Spimi::start(string docDir, string idxDir) {
@@ -68,14 +67,15 @@ void Spimi::start(string docDir, string idxDir) {
     for (int i = 0; i < fileNames.size(); i++) {
         in.open((docDir + "/" + fileNames[i]).c_str(),ios::in);
         processDoc();
+        cout << "---" << endl;
         docID++;
         in.close();
     }
     exit(0);
     // if not all idx's are written
-    if (accumTermCnt % threshold) { 
+    if (accumTermsNum % threshold) { 
         char name[100];
-        sprintf(name, "./tmp/b%d", accumTermCnt % threshold + 1);
+        sprintf(name, "./tmp/b%d", accumTermsNum % threshold + 1);
         dict.writeToFile(name);
     }
     // merge tmp idx
