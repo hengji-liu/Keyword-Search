@@ -2,19 +2,17 @@
 
 Dict::Dict()
 {
-    //ctor
+    itemNum = 0;
+    list.clear();
+    mp.clear();
+    df.clear();
 }
 
 Dict::~Dict()
 {
     //dtor
 }
-void Dict::reset() {
-    itemNum = 0;
-    list.clear();
-    mp.clear();
-    df.clear();
-}
+
 void Dict::output(string s) {
     int id = find(s);
     vector<int> v = list[id].decode();

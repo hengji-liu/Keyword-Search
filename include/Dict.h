@@ -19,7 +19,6 @@ class Dict
         void push(int id, int docID);
         // write dict and idx to file
         void writeToFile(char *indexName);
-        void reset();
         void output(string s);
     protected:
     private:
