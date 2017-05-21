@@ -21,7 +21,6 @@ class IndexList
         void readFromFile(ifstream &in, int len);
     protected:
     private:
-        //vector自动管理内存，动态申请。
         vector<int> buf;
         //bit存储最后一个int使用到了第几位
         int bit;

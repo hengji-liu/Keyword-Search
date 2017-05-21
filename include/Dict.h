@@ -12,25 +12,24 @@ class Dict
     public:
         Dict();
         virtual ~Dict();
-        //查找是否包含s词
-        int find(string s);
-        //插入一个新词
-        void insert(string s, int docID);
+        // check if term is in the mp
+        int find(string term);
+        // insert a term
+        void insert(string term, int docID);
         void push(int id, int docID);
-        //将词典和索引写入文件。
+        // write dict and idx to file
         void writeToFile(char *indexName);
-        //重置
         void reset();
         void output(string s);
     protected:
     private:
-        //词项数目
+        // term count
         int itemNum;
-        //单词映射
+        // <term, termID> mapping
         map<string, int> mp;
-        //存每一个单词的索引列表
+        // posting list for every term
         vector<IndexList> list;
-        //每个词的文档频率
+        // document frequency
         vector<int> df;
 };
 

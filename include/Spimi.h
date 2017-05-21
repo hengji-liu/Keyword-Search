@@ -25,12 +25,11 @@ class Spimi
     public:
         Spimi();
         virtual ~Spimi();
-        string merge();
         int getDocNum();
         int getTokenNum();
         int getItemNum();
         double getAveLen();
-        void generateDictIndex(string file, string dictFile, string indexFile);
+        void generateDictIdx(string file, string dictFile, string indexFile);
         void start(string path, int splitNum, string dictFile, string indexFile);
     protected:
     private:

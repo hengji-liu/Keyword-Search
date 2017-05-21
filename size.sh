@@ -1,0 +1,1 @@
+find ./sf_a3 -ls | tr -s ' '|cut -d' ' -f 8| paste -sd+|bc

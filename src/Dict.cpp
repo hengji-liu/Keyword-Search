@@ -27,7 +27,7 @@ void Dict::output(string s) {
 }
 void Dict::push(int id, int docID) {
     //cout<<id<<" "<<docID<<endl;
-    if (id == (int)list.size()) {
+    if (id == (int)list.size()) { // new indexList for a new term
         IndexList il;
         list.push_back(il);
         df.push_back(0);
@@ -35,17 +35,17 @@ void Dict::push(int id, int docID) {
     list[id].push(docID);
     df[id] = df[id] + 1;
 }
-int Dict::find(string s) {
-    map<string, int>::iterator it = mp.find(s);
+int Dict::find(string term) {
+    map<string, int>::iterator it = mp.find(term);
     if (it != mp.end()) return it->second;
     else return -1;
 }
-void Dict::insert(string s, int docID) {
+void Dict::insert(string term, int docID) {
     int id;
-    if ((id = find(s)) != -1) {
+    if ((id = find(term)) != -1) { // termId is in the dict
         push(id, docID);
     } else {
-        mp[s] = itemNum++;
+        mp[term] = itemNum++;
         push(itemNum - 1, docID);
     }
 }
@@ -57,12 +57,13 @@ void Dict::writeToFile(char *indexName) {
     for (;it != mp.end(); it++) {
         const char* str = it->first.c_str();
         char l = strlen(str);
-        //写单词
+        // write term length and term
         out.write(&l, sizeof(char));
         out.write(str, l);
-        //写文档频率
+        // write doc freq of the term
         out.write((char *)&df[it->second], sizeof(int));
-        list[it->second].writeOffset(out);
+        // write
+        list[it->second].writeOffset(out); // postingList.writeOffset(out)
         list[it->second].writeToFile(out);
     }
 

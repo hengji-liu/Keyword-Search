@@ -9,6 +9,8 @@ Util::~Util()
 {
     //dtor
 }
+
+// get all file names under a directory
 vector<string> Util::getFiles(string path) {
     DIR *dp;
     struct dirent *dirp;
@@ -24,6 +26,7 @@ vector<string> Util::getFiles(string path) {
     }
     return file_names;
 }
+
 void Util::delFile(string file) {
     file = "rm -f " + file;
     system(file.c_str());

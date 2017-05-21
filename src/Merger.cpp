@@ -9,25 +9,25 @@ Merger::~Merger()
 {
     //dtor
 }
-void Merger::readWord(ifstream &in, char *s) {
-    char c =  -1;
-    in.read(&c, sizeof(char));
-    if (c == -1) {
-        s[0] = 0;
+void Merger::readTerm(ifstream &in, char *term) {
+    char termLength =  -1;
+    in.read(&termLength, sizeof(char));
+    if (termLength == -1) {
+        term[0] = 0; // \0 indicates the end of string
         return;
     }
-    in.read(s, c);
-    s[(int)c] = 0;
+    in.read(term, termLength);
+    term[(int)termLength] = 0;
 }
-void Merger::writeToFile(ofstream &out, char* word, int df, IndexList &il) {
-    char len = strlen(word);
+void Merger::writeToFile(ofstream &out, char* term, int df, IndexList &il) {
+    char len = strlen(term);
     if (len == 0)cout<<"error!!"<<endl;
-    //写单词
+    // write term length and term
     out.write(&len, sizeof(char));
-    out.write(word, len * sizeof(char));
-    //写文档频率
+    out.write(term, len * sizeof(char));
+    // write doc freq
     out.write((char *)&df, sizeof(int));
-    //写索引列表
+    // write posting list
     il.writeOffset(out);
     il.writeToFile(out);
 }
@@ -48,8 +48,8 @@ void Merger::mergeTwo(const char *file1, const char *file2, char *outfile) {
     ofstream out(outfile, ios::binary|ios::out);
     cout<<file1<<" "<<file2<<endl;
     char s1[100],s2[100];
-    readWord(in1, s1);
-    readWord(in2, s2);
+    readTerm(in1, s1);
+    readTerm(in2, s2);
     int len, df;
     IndexList il, tmp;
     itemNum = 0;
@@ -60,14 +60,14 @@ void Merger::mergeTwo(const char *file1, const char *file2, char *outfile) {
             in1.read((char *)&len, sizeof(int));
             il.readFromFile(in1, len);
             writeToFile(out, s1, df, il);
-            readWord(in1, s1);
+            readTerm(in1, s1);
             itemNum++;
         } else if (strcmp(s1, s2) > 0) {
             in2.read((char *)&df, sizeof(int));
             in2.read((char *)&len, sizeof(int));
             il.readFromFile(in2, len);
             writeToFile(out, s2, df, il);
-            readWord(in2, s2);
+            readTerm(in2, s2);
             itemNum++;
         } else {
             in1.read((char *)&df, sizeof(int));
@@ -83,8 +83,8 @@ void Merger::mergeTwo(const char *file1, const char *file2, char *outfile) {
                 il.push(v[i]);
             }
             writeToFile(out, s1, df + df1, il);
-            readWord(in1, s1);
-            readWord(in2, s2);
+            readTerm(in1, s1);
+            readTerm(in2, s2);
             itemNum++;
         }
     }

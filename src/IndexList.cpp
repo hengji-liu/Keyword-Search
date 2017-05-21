@@ -108,6 +108,7 @@ void IndexList::writeToFile(ofstream &out) {
         out.write((char *)(&x), sizeof(int));
     }
     char c = bit;
+    // cout << unsigned(c) << endl;
     out.write(&c, sizeof(char));
     out.write((char *)&last, sizeof(int));
 }
@@ -124,4 +125,6 @@ void IndexList::readFromFile(ifstream &in, int len) {
     int a;
     in.read((char *)&a, sizeof(int));
     last = a;
+    // in.read(&bit, sizeof(char));
+    // in.read((char *)&last, sizeof(int));
 }

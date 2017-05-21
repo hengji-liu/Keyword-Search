@@ -95,7 +95,7 @@ void Spimi::processFile() {
             cout<<"发生错误:"<<docID<<endl;
         }
         //printf("%d\n", docID);
-        if (docID % splitNum == 0) {
+        if (docID % splitNum == 0) { // write tmp idx file every splitNum
             char name[100];
             sprintf(name, "./tmp/b%d", docID / splitNum);
             dict.writeToFile(name);
@@ -106,57 +106,59 @@ void Spimi::processFile() {
 void Spimi::start(string path, int splitNum, string dictFile, string indexFile) {
     dict.reset();
     this->splitNum = splitNum;
-    vector<string> v = util.getFiles(path);
-    int size = v.size();
+    vector<string> fileNames = util.getFiles(path);
+    int size = fileNames.size();
     docID = 0;
     tokenNum = 0;
     for (int i = size - 1; i >= 0; i--) {
-        in.open((path + "/" + v[i]).c_str(),ios::in);
-        cout<<"处理文件: "<<path + "/" + v[i]<<endl;
+        in.open((path + "/" + fileNames[i]).c_str(),ios::in);
+        // cout<<"处理文件: "<<path + "/" + fileNames[i]<<endl;
         processFile();
         cout<<"文件处理完成"<<endl;
         in.close();
     }
-    if (docID % splitNum) {
+    if (docID % splitNum) { // if not all idx's are written
         char name[100];
         sprintf(name, "./tmp/b%d", docID / splitNum + 1);
         dict.writeToFile(name);
     }
-    string name = merge();
+    // merge tmp idx
+    string name = merger.merge("./tmp");
     cout<<name<<endl;
-    generateDictIndex(name, dictFile, indexFile);
+    generateDictIdx(name, dictFile, indexFile);
     util.delFile(name);
 }
-string Spimi::merge() {
-    return merger.merge("./tmp");
-}
-void Spimi::generateDictIndex(string file, string dictFile, string indexFile) {
-    in.open(file.c_str(), ios::binary|ios::in);
-    ofstream out2(indexFile.c_str(), ios::binary|ios::out);
+
+void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) {
+    in.open(tmpIdxFile.c_str(), ios::binary|ios::in);
+    ofstream out2idx(idxFile.c_str(), ios::binary|ios::out);
     map<string, pair<int, int> > mp;
-    char s[100], c;
+    char term[100], termLen;
     int offset = 0, len, t, df;
     while(!in.eof()) {
-        c = -1;
-        in.read(&c, sizeof(char));
-        if (c == -1) break;
-        in.read(s, c);
-        s[c] = 0;
+        // get term length
+        termLen = -1;
+        in.read(&termLen, sizeof(char));
+        if (termLen == -1) break;
+        // get term
+        in.read(term, termLen);
+        term[termLen] = 0;
+        // get df and posting length
         in.read((char *)&df, sizeof(df));
         in.read((char *)&len, sizeof(int));
-        //记录文档频率和词条在文件起始的字节位置
-        mp[s] = make_pair<int, int>(df, offset);
-        t = (len * 4) + 1 + 4;
+        // record docFreq and start position of posting list
+        mp[term] = make_pair<int, int>(df, offset);
+        t = (len * 4) + 1 + 4; // docID as int + bit as char + last docId as int
         offset += t;
         char *buf = new char[t];
         in.read(buf, sizeof(char) * t);
-        out2.write(buf, sizeof(char) * t);
+        out2idx.write(buf, sizeof(char) * t);
         delete[] buf;
     }
     cd.generateDict(mp, offset);
     cd.writeToFile(dictFile);
     in.close();
-    out2.close();
+    out2idx.close();
 }
 
 

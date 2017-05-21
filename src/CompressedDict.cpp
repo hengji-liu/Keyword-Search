@@ -20,36 +20,41 @@ void CompressedDict::reset() {
 void CompressedDict::generateDict(map<string, pair<int, int> > mp, int l) {
     map<string, pair<int, int> >::iterator it = mp.begin();
     int len = 0;
-    vector<string> v;
+    vector<string> terms;
     dict.clear();
+    // make terms and dict
     for (; it != mp.end(); it++) {
-        v.push_back(it->first);
+        terms.push_back(it->first); // term
+        // <df, term_offset_in_dict, offset_in_idx>
         dict.push_back(dictNode(it->second.first, len, it->second.second));
         len += it->first.size();
     }
-    //加一个结束标兵
+
+    // end flag
     dict.push_back(dictNode(0, len, l));
+
+    // copy all of the terms to buf
     if (buf) delete[] buf;
     buf = new char[len];
-    int size = v.size(), st = 0;
-    printf("len%d\n", len);
-    for (int i = 0; i < size; i++) {
-        strcpy(buf + st, v[i].c_str());
-        st += v[i].size();
+    int st = 0;
+    for (int i = 0; i < terms.size(); i++) {
+        strcpy(buf + st, terms[i].c_str());
+        st += terms[i].size();
     }
+
+    printf("len%d\n", len);
     this->len = len;
 }
 void CompressedDict::writeToFile(string file) {
-    ofstream out(file.c_str(), ios::binary|ios::out);
-    out.write((char *)&len, sizeof(int));
-    out.write(buf, sizeof(char) * len);
-    int size = dict.size();
-    for (int i = 0; i < size; i++) {
-        out.write((char *)&dict[i].df, sizeof(int));
-        out.write((char *)&dict[i].st, sizeof(int));
-        out.write((char *)&dict[i].offset, sizeof(int));
+    ofstream out2dict(file.c_str(), ios::binary|ios::out);
+    out2dict.write((char *)&len, sizeof(int)); // terms total length
+    out2dict.write(buf, sizeof(char) * len); // all terms
+    for (int i = 0; i < dict.size(); i++) {
+        out2dict.write((char *)&dict[i].df, sizeof(int));
+        out2dict.write((char *)&dict[i].st, sizeof(int));
+        out2dict.write((char *)&dict[i].offset, sizeof(int));
     }
-    out.close();
+    out2dict.close();
 }
 void CompressedDict::readFromFile(string file) {
     ifstream in(file.c_str(), ios::binary|ios::in);
