@@ -10,7 +10,7 @@ TARGET = main
 
 BIN_TARGET = ${DIR_BIN}/${TARGET}
 
-CC = g++
+CC = g++ -std=c++11
 CFLAGS = -g -Wall -I${DIR_INC}
 
 ${BIN_TARGET}:${OBJ}
@@ -20,3 +20,4 @@ ${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp
 .PHONY:clean
 clean:
 	rm -rf ${DIR_OBJ}/*.o
+	rm main
