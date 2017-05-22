@@ -3,7 +3,6 @@
 
 #include <cstring>
 #include <string>
-#include <set>
 #include <cstring>
 #include <string>
 #include <fstream>
@@ -12,6 +11,7 @@
 #include <set>
 #include <cstdio>
 #include <cstdlib>
+#include <regex>
 #include "Dict.h"
 #include "Util.h"
 #include "Merger.h"
@@ -28,6 +28,7 @@ class Spimi
         void start(string docDir, string idxDir);
     protected:
     private:
+        regex extractor;
         ifstream in;
         Dict dict;
         CompressedDict cd;
@@ -38,7 +39,6 @@ class Spimi
         int docID;
         void processDoc();
         void updateDict(vector<string>& v);
-        string trim(string& str);
 };
 
 #endif // SPIMI_H

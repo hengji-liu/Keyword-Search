@@ -5,14 +5,18 @@ Spimi::Spimi()
     threshold = 3;
     docID = 0;
     accumTermsNum = 0;
-    }
+    extractor.assign("[a-zA-Z]{3,}");
+}
+
 Spimi::~Spimi()
 {
     //dtor
 }
+
 int Spimi::getDocNum() {
     return docID;
 }
+
 void Spimi::updateDict(vector<string> &v) {
     vector<string>::iterator it = v.begin();
     for (; it != v.end(); it++) {
@@ -20,42 +24,30 @@ void Spimi::updateDict(vector<string> &v) {
     }
 }
 
-// discard intial or trailing non-alphabet char
-string Spimi::trim(string& str) {
-    int i = 0;
-    int j = str.size() - 1;
-    while(!isalpha(str[i]) && i <= j) {
-        i++;
-    }
-    while(!isalpha(str[j]) && i <= j) {
-        j--;
-    }
-    // TODO: stemming
-    str = str.substr(i, j - i + 1);
-    j = str.size();
-    for (i = 0; i < j; i++)
-        str[i] = tolower(str[i]);
-    return str;
-}
-
 void Spimi::processDoc() {
     vector<string> v;
-    string str;
-    while(in>>str) {
-        str = trim(str);
-        if (str == "")
-            continue;
-        // cout << str << endl;
-        v.push_back(str);
-        accumTermsNum++;
-        // write tmp idx file when accumTermsNum exceed the threshold
-        if (accumTermsNum % threshold == 0) {
-            updateDict(v);
-            v.clear();
-            // char name[100];
-            // sprintf(name, "./tmp/b%d", docID / splitNum);
-            // dict.writeToFile(name);
-            // dict.reset();
+    string line;
+    while(getline(in, line)){
+        sregex_iterator rit(line.begin(), line.end(), extractor);
+        sregex_iterator rend;
+        while (rit!=rend) {
+            string term = rit->str();
+            for (int i = 0; i < term.size(); i++)
+                term[i] = tolower(term[i]);
+            // cout << term << endl;
+            // TODO stopword fileter, stemming
+            v.push_back(term);
+            accumTermsNum++;
+            // write tmp idx file when accumTermsNum exceed the threshold
+            if (accumTermsNum % threshold == 0) {
+                updateDict(v);
+                v.clear();
+                // char name[100];
+                // sprintf(name, "./tmp/b%d", docID / splitNum);
+                // dict.writeToFile(name);
+                // dict.reset();
+            }
+            ++rit;
         }
     }
     updateDict(v);
@@ -67,7 +59,7 @@ void Spimi::start(string docDir, string idxDir) {
     for (int i = 0; i < fileNames.size(); i++) {
         in.open((docDir + "/" + fileNames[i]).c_str(),ios::in);
         processDoc();
-        cout << "---" << endl;
+        // TODO store <docID, docName>
         docID++;
         in.close();
     }
@@ -103,7 +95,7 @@ void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) 
         in.read((char *)&df, sizeof(df));
         in.read((char *)&len, sizeof(int));
         // record docFreq and start position of posting list
-        mp[term] = make_pair<int, int>(df, offset);
+        // mp[term] = make_pair<int, int>(df, offset);
         t = (len * 4) + 1 + 4; // docID as int + bit as char + last docId as int
         offset += t;
         char *buf = new char[t];
