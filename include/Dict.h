@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "IndexList.h"
+#include "Postings.h"
 using namespace std;
 class Dict
 {
@@ -14,22 +14,15 @@ class Dict
         virtual ~Dict();
         // check if term is in the mp
         int find(string term);
-        // insert a term
-        void insert(string term, int docID);
-        void push(int id, int docID);
+        // update dict with a term occurrence
+        void update(string term, int docID);
         // write dict and idx to file
         void writeToFile(char *indexName);
         void output(string s);
     protected:
-    private:
-        // # of terms 
-        int termsNum;
-        // <term, termID> mapping
-        map<string, int> mp;
-        // posting list for every term
-        vector<IndexList> list;
-        // document frequency
-        vector<int> df;
+    private:  
+        // <term, postings>
+        map<string, Postings> mp;
 };
 
 #endif // DICT_H

@@ -30,16 +30,20 @@ spimi::generateDictIdx	idx write {all docIDs, bit, last docID}
 
 --------change from gamma to variable byte-----------
 
-dict::writeToFile	for every <term, termId> in mp,
-				write (	term_length, 
-					term, 
-					term_docFreq, 
-					{all docIDs},
-					)
+
+dict: dict of a block, it receives <term, docid>
+	map<term, PostingsList>
+
+postingsList:
+	map<docID, term freq>
+
+for every <term, PostingsList> in mp write <termLen, term, {docid, termfreq}>
 
 
-posting list : for each term {docID, term frequency}, 4Byte+4Byte
-dictionary: for each term {offset in string, offset in posting list) 4Byte+4Byte
-terms: all terms as a string
 
-dictionay sorted in alphabetic order, do binary search to find entry
+postings list£º	for each term {docID, term frequency}, 4Byte+4Byte
+dictionary:	for each term {offset in string, offset in posting list) 4Byte+4Byte
+terms:		all terms as a string
+
+dict sorted in lexicon order, do binary search (compare lexicon order) to find dict entry
+may need to read 2 dictNodes to decide read size

@@ -4,7 +4,6 @@
 #include <cstring>
 #include <string>
 #include <cstring>
-#include <string>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -14,8 +13,7 @@
 #include <regex>
 #include "Dict.h"
 #include "Util.h"
-#include "Merger.h"
-#include "CompressedDict.h"
+// #include "Merger.h"
 using namespace std;
 
 class Spimi
@@ -31,9 +29,8 @@ class Spimi
         regex extractor;
         ifstream in;
         Dict dict;
-        CompressedDict cd;
         Util util;
-        Merger merger;
+        // Merger merger;
         int accumTermsNum;
         int threshold;
         int docID;

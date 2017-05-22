@@ -20,7 +20,7 @@ int Spimi::getDocNum() {
 void Spimi::updateDict(vector<string> &v) {
     vector<string>::iterator it = v.begin();
     for (; it != v.end(); it++) {
-        dict.insert(*it, docID);
+        dict.update(*it, docID);
     }
 }
 
@@ -38,7 +38,7 @@ void Spimi::processDoc() {
             // TODO stopword fileter, stemming
             v.push_back(term);
             accumTermsNum++;
-            // write tmp idx file when accumTermsNum exceed the threshold
+            // write tmp idx file when accumTermsNum exceeds the threshold
             if (accumTermsNum % threshold == 0) {
                 updateDict(v);
                 v.clear();
@@ -71,10 +71,10 @@ void Spimi::start(string docDir, string idxDir) {
         dict.writeToFile(name);
     }
     // merge tmp idx
-    string name = merger.merge("./tmp");
-    cout<<name<<endl;
-    generateDictIdx(name, idxDir, idxDir);
-    util.delFile(name);
+    // string name = merger.merge("./tmp");
+    // cout<<name<<endl;
+    // generateDictIdx(name, idxDir, idxDir);
+    // util.delFile(name);
 }
 
 void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) {
@@ -90,7 +90,7 @@ void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) 
         if (termLen == -1) break;
         // get term
         in.read(term, termLen);
-        term[termLen] = 0;
+        // term[termLen] = 0;
         // get df and posting length
         in.read((char *)&df, sizeof(df));
         in.read((char *)&len, sizeof(int));
@@ -103,8 +103,8 @@ void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) 
         out2idx.write(buf, sizeof(char) * t);
         delete[] buf;
     }
-    cd.generateDict(mp, offset);
-    cd.writeToFile(dictFile);
+    // cd.generateDict(mp, offset);
+    // cd.writeToFile(dictFile);
     in.close();
     out2idx.close();
 }
