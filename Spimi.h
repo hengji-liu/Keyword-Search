@@ -28,7 +28,6 @@ class Spimi
         ifstream in;
 
         Dict dict;
-        Util util;
         // Merger merger;
 
         int accumTermsNum;

@@ -13,8 +13,8 @@ class Util
     public:
         Util();
         virtual ~Util();
-        vector<string> getFiles(string path);
-        void delFile(string file);
+        static vector<string> getFiles(string path);
+        static void delFile(string file);
     protected:
     private:
 };

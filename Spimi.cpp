@@ -48,7 +48,7 @@ void Spimi::processDoc() {
 void Spimi::start(string docDir, string idxDir) {
     this->idxDir = idxDir;
     // process each doc in the folder
-    vector<string> fileNames = util.getFiles(docDir);
+    vector<string> fileNames = Util::getFiles(docDir);
     for (int i = 0; i < fileNames.size(); i++) {
         in.open((docDir + "/" + fileNames[i]).c_str(),ios::in);
         processDoc();
@@ -64,10 +64,9 @@ void Spimi::start(string docDir, string idxDir) {
         dict.writeToFile(out);
         out.close();
     }
-    exit(0);
     // merge tmp idx
-    //TODO
-    // string name = merger.merge("./tmp");
+    // string name = merger.merge(idxDir);
+    exit(0);
     // cout<<name<<endl;
     // generateDictIdx(name, idxDir, idxDir);
     // util.delFile(name);

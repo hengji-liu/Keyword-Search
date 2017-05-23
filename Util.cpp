@@ -15,10 +15,7 @@ vector<string> Util::getFiles(string path) {
     DIR *dp;
     struct dirent *dirp;
     vector<string> file_names;
-    if((dp=opendir(path.c_str()))==NULL){
-        perror("opendir error");
-        exit(1);
-    }
+    dp = opendir(path.c_str());
     while((dirp=readdir(dp))!=NULL){
         if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
             continue;
