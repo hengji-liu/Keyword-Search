@@ -30,8 +30,7 @@ int main(int argc, char* argv[])
     bool idxExists = (stat(idxDir.c_str(), &buff) == 0);
     if (!idxExists)
     {
-        string command = "mkdir " + idxDir;
-        system(command.c_str());
+        Util::mkdir(idxDir);
         Spimi spimi;
         spimi.start(docDir, idxDir);
     }

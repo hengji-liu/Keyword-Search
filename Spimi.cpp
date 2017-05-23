@@ -48,7 +48,7 @@ void Spimi::processDoc() {
 void Spimi::start(string docDir, string idxDir) {
     this->idxDir = idxDir;
     // process each doc in the folder
-    vector<string> fileNames = Util::getFiles(docDir);
+    vector<string> fileNames = Util::ls(docDir);
     for (int i = 0; i < fileNames.size(); i++) {
         in.open((docDir + "/" + fileNames[i]).c_str(),ios::in);
         processDoc();
@@ -69,7 +69,7 @@ void Spimi::start(string docDir, string idxDir) {
     exit(0);
     // cout<<name<<endl;
     // generateDictIdx(name, idxDir, idxDir);
-    // util.delFile(name);
+    // Util::rm(name);
 }
 
 void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) {

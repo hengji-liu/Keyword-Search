@@ -11,7 +11,7 @@ Util::~Util()
 }
 
 // get all file names under a directory
-vector<string> Util::getFiles(string path) {
+vector<string> Util::ls(string path) {
     DIR *dp;
     struct dirent *dirp;
     vector<string> file_names;
@@ -24,7 +24,12 @@ vector<string> Util::getFiles(string path) {
     return file_names;
 }
 
-void Util::delFile(string file) {
+void Util::rm(string file) {
     file = "rm -f " + file;
     system(file.c_str());
+}
+
+void Util::mkdir(string dir){
+    string command = "mkdir " + dir;
+    system(command.c_str());
 }

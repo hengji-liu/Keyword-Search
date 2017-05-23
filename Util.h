@@ -13,8 +13,9 @@ class Util
     public:
         Util();
         virtual ~Util();
-        static vector<string> getFiles(string path);
-        static void delFile(string file);
+        static vector<string> ls(string path);
+        static void rm(string file);
+        static void mkdir(string dir);
     protected:
     private:
 };
