@@ -11,13 +11,14 @@ class Postings
     public:
         Postings();
         virtual ~Postings();
+        int df();
         void push(int docID, int freq);
         vector<int> decode();
         void writeToFile(ofstream &out);
         void readFromFile(ifstream &in, int len);
     protected:
     private:
-        map<int, int> pl; // <docID, freq>
+        map<int, int> p; // <docID, tf>
         int find(int docID);
 };
 

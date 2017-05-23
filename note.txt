@@ -28,7 +28,7 @@ spimi::generateDictIdx	idx write {all docIDs, bit, last docID}
 ->cd::writeToFile	dict write (term total length, all terms, {df, term_offset_in_dict, offset_in_idx})
 
 
---------change from gamma to variable byte-----------
+--------change from gamma to fix length-----------
 
 
 dict: dict of a block, it receives <term, docid>
@@ -37,12 +37,12 @@ dict: dict of a block, it receives <term, docid>
 postingsList:
 	map<docID, term freq>
 
-for every <term, PostingsList> in mp write <termLen, term, {docid, termfreq}>
+for every <term, PostingsList> in mp write {termLen, term, df, {docid, termfreq}}
 
 
 
-postings list£º	for each term {docID, term frequency}, 4Byte+4Byte
-dictionary:	for each term {offset in string, offset in posting list) 4Byte+4Byte
+postings list£º	for each term {docID, termfreq}, 4Byte+4Byte
+dictionary:	for each term {offset in string, offset in posting list} 4Byte+4Byte
 terms:		all terms as a string
 
 dict sorted in lexicon order, do binary search (compare lexicon order) to find dict entry

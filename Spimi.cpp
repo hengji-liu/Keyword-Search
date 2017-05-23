@@ -1,4 +1,4 @@
-﻿#include "../include/Spimi.h"
+﻿#include "Spimi.h"
 
 Spimi::Spimi()
 {
@@ -11,17 +11,6 @@ Spimi::Spimi()
 Spimi::~Spimi()
 {
     //dtor
-}
-
-int Spimi::getDocNum() {
-    return docID;
-}
-
-void Spimi::updateDict(vector<string> &v) {
-    vector<string>::iterator it = v.begin();
-    for (; it != v.end(); it++) {
-        dict.update(*it, docID);
-    }
 }
 
 void Spimi::processDoc() {
@@ -40,20 +29,24 @@ void Spimi::processDoc() {
             accumTermsNum++;
             // write tmp idx file when accumTermsNum exceeds the threshold
             if (accumTermsNum % threshold == 0) {
-                updateDict(v);
+                dict.update(v, docID);
                 v.clear();
-                // char name[100];
-                // sprintf(name, "./tmp/b%d", docID / splitNum);
-                // dict.writeToFile(name);
-                // dict.reset();
+                // write to file
+                string idxFile = idxDir +"/tmp" + to_string(accumTermsNum/threshold);
+                ofstream out(idxFile, ios::binary|ios::out);
+                dict.writeToFile(out);
+                out.close();
+                // get ready for the next blcok
+                dict.reset();
             }
             ++rit;
         }
     }
-    updateDict(v);
+    dict.update(v, docID);
 }
 
 void Spimi::start(string docDir, string idxDir) {
+    this->idxDir = idxDir;
     // process each doc in the folder
     vector<string> fileNames = util.getFiles(docDir);
     for (int i = 0; i < fileNames.size(); i++) {
@@ -61,16 +54,19 @@ void Spimi::start(string docDir, string idxDir) {
         processDoc();
         // TODO store <docID, docName>
         docID++;
+        cout << docID << endl;
         in.close();
     }
-    exit(0);
     // if not all idx's are written
     if (accumTermsNum % threshold) { 
-        char name[100];
-        sprintf(name, "./tmp/b%d", accumTermsNum % threshold + 1);
-        dict.writeToFile(name);
+        string idxFile = idxDir + "/tmp" + to_string(accumTermsNum/threshold + 1);
+        ofstream out(idxFile, ios::binary|ios::out);
+        dict.writeToFile(out);
+        out.close();
     }
+    exit(0);
     // merge tmp idx
+    //TODO
     // string name = merger.merge("./tmp");
     // cout<<name<<endl;
     // generateDictIdx(name, idxDir, idxDir);

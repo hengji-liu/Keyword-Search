@@ -21,21 +21,22 @@ class Spimi
     public:
         Spimi();
         virtual ~Spimi();
-        int getDocNum();
         void generateDictIdx(string file, string dictFile, string indexFile);
         void start(string docDir, string idxDir);
     protected:
     private:
-        regex extractor;
         ifstream in;
+
         Dict dict;
         Util util;
         // Merger merger;
+
         int accumTermsNum;
         int threshold;
         int docID;
+        string idxDir;
+        regex extractor;
         void processDoc();
-        void updateDict(vector<string>& v);
 };
 
 #endif // SPIMI_H

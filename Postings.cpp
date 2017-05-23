@@ -1,4 +1,4 @@
-﻿#include "../include/Postings.h"
+﻿#include "Postings.h"
 
 Postings::Postings()
 {
@@ -10,6 +10,10 @@ Postings::~Postings()
     //dtor
 }
 
+int Postings::df(){
+    return p.size();
+}
+
 vector<int> Postings::decode() {
     //TODO
     vector<int> v;
@@ -18,28 +22,26 @@ vector<int> Postings::decode() {
 
 void Postings::push(int docID, int freq) {
     if (find(docID) == 0) { // new docID
-        pl.insert(pair<int, int>(docID, freq));
+        p.insert(pair<int, int>(docID, freq));
     }else{
-        pl[docID] += freq;
+        p[docID] += freq;
     }
 }
 
 int Postings::find(int docID) {
-    map<int, int>::iterator it = pl.find(docID);
-    if (it != pl.end()) return 1;
+    map<int, int>::iterator it = p.find(docID);
+    if (it != p.end()) return 1;
     else return 0;
 }
 
 void Postings::writeToFile(ofstream &out) {
-    // int len = buf.size();
-    // for (int i = 0; i < len; i++) {
-    //     int x = buf[i];
-    //     out.write((char *)(&x), sizeof(int));
-    // }
-    // char c = bit;
-    // // cout << unsigned(c) << endl;
-    // out.write(&c, sizeof(char));
-    // out.write((char *)&last, sizeof(int));
+    map<int, int>::iterator it = p.begin();
+    for (;it != p.end(); it++) {
+        int docID = it->first;
+        int freq = it->second;
+        out.write((char*)(&docID), 4);
+        out.write((char*)(&freq), 4);
+    }
 }
 
 void Postings::readFromFile(ifstream &in, int len) {
