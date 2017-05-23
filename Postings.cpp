@@ -39,8 +39,8 @@ void Postings::writeToFile(ofstream &out) {
     for (;it != p.end(); it++) {
         int docID = it->first;
         int freq = it->second;
-        out.write((char*)(&docID), 4);
-        out.write((char*)(&freq), 4);
+        out.write((char*)(&docID), sizeof(int));
+        out.write((char*)(&freq), sizeof(int));
     }
 }
 

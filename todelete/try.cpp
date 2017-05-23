@@ -4,21 +4,14 @@
 using namespace std;
 
 int main() {
-string s1 = "abcd";
-string s2 = "AB";
+int i = 0;
 fstream out("dump", ios::out);
-out << s1;
-out << s2;
+out.write((char*)(&i), sizeof(int));
 out.close();
 
-char* s3 = new char[4];
-char* s4 = new char[2];
+int j;
 fstream in("dump", ios::in);
-in.read(s3, 4);
-in.read(s4, 2);
-cout << string(s3) <<endl;
-cout << string(s2) <<endl;
-cout << s2 <<endl;
-
+in.read((char *)&j, sizeof(int));
+cout << j <<endl;
 in.close();
 }

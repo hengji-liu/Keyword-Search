@@ -53,9 +53,9 @@ void Dict::writeToFile(ofstream &out) {
         int termLen = term.size();
         int df = posting.df();
         // write term length, term and df
-        out.write((char*)(&termLen), 4);
-        out.write(term.c_str(), term.size());
-        out.write((char*)(&df), 4);
+        out.write((char*)(&termLen), sizeof(int));
+        out.write(term.c_str(), termLen);
+        out.write((char*)(&df), sizeof(int));
         // write postings: <docID, tf>
         posting.writeToFile(out);
     }

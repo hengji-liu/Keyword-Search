@@ -54,7 +54,6 @@ void Spimi::start(string docDir, string idxDir) {
         processDoc();
         // TODO store <docID, docName>
         docID++;
-        cout << docID << endl;
         in.close();
     }
     // if not all idx's are written
@@ -64,8 +63,8 @@ void Spimi::start(string docDir, string idxDir) {
         dict.writeToFile(out);
         out.close();
     }
-    // merge tmp idx
-    // string name = merger.merge(idxDir);
+    // merge tmp 
+    string idxFile = Merger::merge(idxDir);
     exit(0);
     // cout<<name<<endl;
     // generateDictIdx(name, idxDir, idxDir);

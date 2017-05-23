@@ -12,8 +12,7 @@
 #include <cstdlib>
 #include <regex>
 #include "Dict.h"
-#include "Util.h"
-// #include "Merger.h"
+#include "Merger.h"
 using namespace std;
 
 class Spimi
@@ -28,8 +27,7 @@ class Spimi
         ifstream in;
 
         Dict dict;
-        // Merger merger;
-
+        
         int accumTermsNum;
         int threshold;
         int docID;
