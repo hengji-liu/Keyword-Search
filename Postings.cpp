@@ -1,21 +1,5 @@
 ﻿#include "Postings.h"
 
-Postings::Postings()
-{
-    //ctor
-}
-
-Postings::~Postings()
-{
-    //dtor
-}
-
-vector<int> Postings::decode() {
-    //TODO
-    vector<int> v;
-    return v;
-}
-
 void Postings::push(int docID, int freq) {
     if (find(docID) == 0) { // new docID
         p.insert(pair<int, int>(docID, freq));
@@ -41,21 +25,4 @@ void Postings::writeToFile(ofstream &out) {
         out.write((char*)(&docID), sizeof(int));
         out.write((char*)(&freq), sizeof(int));
     }
-}
-
-void Postings::readFromFile(ifstream &in, int len) {
-    // buf.clear();
-    // for (int i = 0; i < len; i++) {
-    //     int x;
-    //     in.read((char *)&x, sizeof(int));
-    //     buf.push_back(x);
-    // }
-    // char c;
-    // in.read(&c, sizeof(char));
-    // bit = c;
-    // int a;
-    // in.read((char *)&a, sizeof(int));
-    // last = a;
-    // in.read(&bit, sizeof(char));
-    // in.read((char *)&last, sizeof(int));
 }

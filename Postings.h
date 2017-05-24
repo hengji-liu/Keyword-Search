@@ -11,12 +11,8 @@ using namespace std;
 class Postings
 {
     public:
-        Postings();
-        virtual ~Postings();
         void push(int docID, int freq);
-        vector<int> decode();
         void writeToFile(ofstream &out);
-        void readFromFile(ifstream &in, int len);
     protected:
     private:
         map<int, int> p; // <docID, tf>

@@ -1,26 +1,23 @@
 ﻿#include "Spimi.h"
 
-Spimi::Spimi()
-{
-    threshold = 1024 * 1024;
-    docID = 0;
-    accumTermsNum = 0;
-    extractor.assign("[a-zA-Z]{3,}");
-}
-
-Spimi::~Spimi()
-{
-    //dtor
-}
+Spimi::Spimi(string docDir, string idxDir):
+    docDir(docDir), 
+    idxDir(idxDir), 
+    threshold(1024*1024), 
+    docID(0), 
+    accumTermsNum(0),
+    extractor("[a-zA-Z]{3,}")
+    {}
 
 void Spimi::processDoc() {
     vector<string> v;
     string line;
+    string term;
+    sregex_iterator rend;
     while(getline(in, line)){
         sregex_iterator rit(line.begin(), line.end(), extractor);
-        sregex_iterator rend;
         while (rit!=rend) {
-            string term = rit->str();
+            term = rit->str();
             for (int i = 0; i < term.size(); i++)
                 term[i] = tolower(term[i]);
             // cout << term << endl;
@@ -45,8 +42,7 @@ void Spimi::processDoc() {
     dict.update(v, docID);
 }
 
-void Spimi::start(string docDir, string idxDir) {
-    this->idxDir = idxDir;
+void Spimi::build() {
     // process each doc in the folder
     vector<string> fileNames = Util::ls(docDir);
     for (int i = 0; i < fileNames.size(); i++) {
@@ -65,11 +61,11 @@ void Spimi::start(string docDir, string idxDir) {
     }
     // merge tmp 
     string tmpIdxFile = Merger::merge(idxDir);
-    generateDictIdx(tmpIdxFile, idxDir);
+    generateDictIdx(tmpIdxFile);
     Util::rm(tmpIdxFile);
 }
 
-void Spimi::generateDictIdx(string tmpIdxFile, string idxDir) {
+void Spimi::generateDictIdx(string tmpIdxFile) {
     in.open(tmpIdxFile.c_str(), ios::binary|ios::in);
     string t = idxDir+"/t";
     string d = idxDir+"/d";

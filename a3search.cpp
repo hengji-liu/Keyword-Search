@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include "Spimi.h"
-#include "Indexer.h"
+#include "Searcher.h"
 
 using namespace std;
 
@@ -31,26 +31,16 @@ int main(int argc, char* argv[])
     if (!idxExists)
     {
         Util::mkdir(idxDir);
-        Spimi spimi;
-        spimi.start(docDir, idxDir);
+        Spimi spimi(docDir, idxDir);
+        spimi.build();
     }
+    // search, rank and output results
+    Searcher searcher(idxDir);
+    for (vector<string>::const_iterator iter = terms.cbegin(); iter != terms.cend(); iter++){
+        cout << *iter << endl;
+        // searcher.search(*iter);
+    }
+    // searcher.show();
 
-    // cout<<"文档数量:"<<spimi.getDocNum()<<endl;
-
-    // Indexer indexer;
-    // indexer.readFromFile("dict", "index");
-    // cout<<"词项数目:"<<indexer.getItemNum()<<endl;
-    // int df;
-    // cout<<"小写字母单词: 输出倒排索引\n例如输入balabala"<<endl;
-    // while(true) {
-    //     string s;
-    //     cin>>s;
-    //     vector<int> v = indexer.find(s, df);
-    //     cout<<"df:"<<df<<" docID:";
-    //     for (int i = 0; i < v.size(); i++) {
-    //         cout<<" "<<v[i];
-    //     }
-    //     cout<<endl;
-    // }
     return 0;
 }

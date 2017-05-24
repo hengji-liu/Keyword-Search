@@ -11,8 +11,6 @@ using namespace std;
 class Util
 {
     public:
-        Util();
-        virtual ~Util();
         static vector<string> ls(string path);
         static void rm(string file);
         static void mkdir(string dir);

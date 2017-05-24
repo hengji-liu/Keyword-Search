@@ -1,15 +1,5 @@
 ﻿#include "Util.h"
 
-Util::Util()
-{
-    //ctor
-}
-
-Util::~Util()
-{
-    //dtor
-}
-
 // get all file names under a directory
 vector<string> Util::ls(string path) {
     DIR *dp;

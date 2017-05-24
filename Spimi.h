@@ -14,20 +14,20 @@ using namespace std;
 class Spimi
 {
     public:
-        Spimi();
-        virtual ~Spimi();
-        void start(string docDir, string idxDir);
+        Spimi(string docDir, string idxDir);
+        void build();
     protected:
     private:
-        ifstream in;
-        Dict dict;
+        string docDir;
+        string idxDir;
         int accumTermsNum;
         int threshold;
         int docID;
-        string idxDir;
         regex extractor;
+        Dict dict;
+        ifstream in;
         void processDoc();
-        void generateDictIdx(string tmpIdxFile, string idxDir);
+        void generateDictIdx(string tmpIdxFile);
 };
 
 #endif // SPIMI_H

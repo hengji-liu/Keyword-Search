@@ -14,8 +14,6 @@ using namespace std;
 class Merger
 {
     public:
-        Merger();
-        virtual ~Merger();
         // merge all files in that dir
         static string merge(string idxDir);
     protected:

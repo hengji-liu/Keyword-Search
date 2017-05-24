@@ -12,8 +12,6 @@ using namespace std;
 class Dict
 {
     public:
-        Dict();
-        virtual ~Dict();
         void reset();
         // check if term is in the mp
         int find(string term);
@@ -21,7 +19,6 @@ class Dict
         void update(vector<string> &v, int docID);
         // write dict and idx to file
         void writeToFile(ofstream &out);
-        void output(string s);
     protected:
     private:  
         // <term, postings>, sorted automatically
