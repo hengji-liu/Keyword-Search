@@ -70,9 +70,9 @@ void Spimi::generateDictIdx(string tmpIdxFile) {
     string t = idxDir+"/t";
     string d = idxDir+"/d";
     string p = idxDir+"/p";
-    ofstream o2t(t.c_str(), ios::binary|ios::out);
-    ofstream o2d(d.c_str(), ios::binary|ios::out);
-    ofstream o2p(p.c_str(), ios::binary|ios::out);
+    ofstream o2t(t.c_str(), ios::binary|ios::out); // terms as a string
+    ofstream o2d(d.c_str(), ios::binary|ios::out); // {offset in string, termLen, offset in postings, df}
+    ofstream o2p(p.c_str(), ios::binary|ios::out); // {docID, tf}
 
     int t_offset = 0;
     int p_offset = 0;
@@ -84,18 +84,23 @@ void Spimi::generateDictIdx(string tmpIdxFile) {
     in.read(term, termLen);
     term[termLen] = 0;
     int df;
-
+    int postingsLen;
     while(true){
-        in.read((char *)&df, sizeof(int));
-        in.read(buff, df*2*sizeof(int));
-        o2p.write(buff, df*2*sizeof(int));
+        in.read((char *)&df, sizeof(int)); // df
+        postingsLen = df*2*sizeof(int);
+        in.read(buff, postingsLen); // postings
+        o2p.write(buff, postingsLen);
 
         o2t.write(term, termLen);
 
         o2d.write((char *)&t_offset, sizeof(int));
+        o2d.write((char *)&termLen, sizeof(int));
         o2d.write((char *)&p_offset, sizeof(int));
+        o2d.write((char *)&df, sizeof(int));
+
         t_offset += termLen;
-        p_offset += df*2*sizeof(int);
+        p_offset += postingsLen;
+
         // next loop
         in.read((char*)(&termLen), sizeof(int));
         if (in.eof())

@@ -37,10 +37,14 @@ int main(int argc, char* argv[])
     // search, rank and output results
     Searcher searcher(idxDir);
     for (vector<string>::const_iterator iter = terms.cbegin(); iter != terms.cend(); iter++){
-        cout << *iter << endl;
-        // searcher.search(*iter);
+        string term = *iter;
+        int found = searcher.search(term.c_str());
+        if (0 == found){ // term not found
+            cout << endl;
+            return 0;
+        }
     }
-    // searcher.show();
+    searcher.show();
 
     return 0;
 }
