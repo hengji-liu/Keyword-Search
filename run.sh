@@ -1,6 +1,6 @@
-# rm idx
-make clean
-make
-clear
-./a3search dest idx -c num "1" "2" "3" "4" "5"
-# ./a3search dest idx "5" "4" "3" "2" "1"
+# rm -r idx
+# make clean
+# make
+# clear
+./a3search ./test/books200m idx -c num "apple"
+# ./a3search ./test/simple idx "5" "4" "3" "2" "1"

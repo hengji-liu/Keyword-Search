@@ -5,16 +5,15 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
-#include <cstdio>
-#include <cstdlib>
+#include <algorithm>
 using namespace std;
+
 class Util
 {
     public:
-        Util();
-        virtual ~Util();
-        vector<string> getFiles(string path);
-        void delFile(string file);
+        static vector<string> ls(string path);
+        static void rm(string file);
+        static void mkdir(string dir);
     protected:
     private:
 };
