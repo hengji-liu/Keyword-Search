@@ -1,5 +1,6 @@
 /test
-/idx
+*.idx/
+a3search
 
 
 # Windows image file caches

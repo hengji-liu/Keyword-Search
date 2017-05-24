@@ -39,9 +39,11 @@ int main(int argc, char* argv[])
     Searcher searcher(docDir, idxDir);
     for (vector<string>::const_iterator iter = terms.cbegin(); iter != terms.cend(); iter++){
         string term = *iter;
+        for (int i = 0; i < term.size(); i++)
+            term[i] = tolower(term[i]);
         Porter2Stemmer::stem(term);
         int found = searcher.search(term.c_str());
-        if (0 == found){ // term not found
+        if (0 == found){ // term not found in any doc
             cout << endl;
             return 0;
         }
