@@ -16,20 +16,18 @@ class Spimi
     public:
         Spimi();
         virtual ~Spimi();
-        void generateDictIdx(string file, string dictFile, string indexFile);
         void start(string docDir, string idxDir);
     protected:
     private:
         ifstream in;
-
         Dict dict;
-        
         int accumTermsNum;
         int threshold;
         int docID;
         string idxDir;
         regex extractor;
         void processDoc();
+        void generateDictIdx(string tmpIdxFile, string idxDir);
 };
 
 #endif // SPIMI_H

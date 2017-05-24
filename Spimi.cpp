@@ -2,7 +2,7 @@
 
 Spimi::Spimi()
 {
-    threshold = 3;
+    threshold = 1024 * 1024;
     docID = 0;
     accumTermsNum = 0;
     extractor.assign("[a-zA-Z]{3,}");
@@ -64,43 +64,54 @@ void Spimi::start(string docDir, string idxDir) {
         out.close();
     }
     // merge tmp 
-    string idxFile = Merger::merge(idxDir);
-    exit(0);
-    // cout<<name<<endl;
-    // generateDictIdx(name, idxDir, idxDir);
-    // Util::rm(name);
+    string tmpIdxFile = Merger::merge(idxDir);
+    generateDictIdx(tmpIdxFile, idxDir);
+    Util::rm(tmpIdxFile);
 }
 
-void Spimi::generateDictIdx(string tmpIdxFile, string dictFile, string idxFile) {
+void Spimi::generateDictIdx(string tmpIdxFile, string idxDir) {
     in.open(tmpIdxFile.c_str(), ios::binary|ios::in);
-    ofstream out2idx(idxFile.c_str(), ios::binary|ios::out);
-    map<string, pair<int, int> > mp;
-    char term[100], termLen;
-    int offset = 0, len, t, df;
-    while(!in.eof()) {
-        // get term length
-        termLen = -1;
-        in.read(&termLen, sizeof(char));
-        if (termLen == -1) break;
-        // get term
+    string t = idxDir+"/t";
+    string d = idxDir+"/d";
+    string p = idxDir+"/p";
+    ofstream o2t(t.c_str(), ios::binary|ios::out);
+    ofstream o2d(d.c_str(), ios::binary|ios::out);
+    ofstream o2p(p.c_str(), ios::binary|ios::out);
+
+    int t_offset = 0;
+    int p_offset = 0;
+
+    char buff[2000*2*sizeof(int)];
+    char term[256];
+    int termLen = -1;
+    in.read((char*)(&termLen), sizeof(int));
+    in.read(term, termLen);
+    term[termLen] = 0;
+    int df;
+
+    while(true){
+        in.read((char *)&df, sizeof(int));
+        in.read(buff, df*2*sizeof(int));
+        o2p.write(buff, df*2*sizeof(int));
+
+        o2t.write(term, termLen);
+
+        o2d.write((char *)&t_offset, sizeof(int));
+        o2d.write((char *)&p_offset, sizeof(int));
+        t_offset += termLen;
+        p_offset += df*2*sizeof(int);
+        // next loop
+        in.read((char*)(&termLen), sizeof(int));
+        if (in.eof())
+            break;
         in.read(term, termLen);
-        // term[termLen] = 0;
-        // get df and posting length
-        in.read((char *)&df, sizeof(df));
-        in.read((char *)&len, sizeof(int));
-        // record docFreq and start position of posting list
-        // mp[term] = make_pair<int, int>(df, offset);
-        t = (len * 4) + 1 + 4; // docID as int + bit as char + last docId as int
-        offset += t;
-        char *buf = new char[t];
-        in.read(buf, sizeof(char) * t);
-        out2idx.write(buf, sizeof(char) * t);
-        delete[] buf;
+        term[termLen] = 0;
     }
-    // cd.generateDict(mp, offset);
-    // cd.writeToFile(dictFile);
+
     in.close();
-    out2idx.close();
+    o2t.close();
+    o2d.close();
+    o2p.close();
 }
 
 
