@@ -4,10 +4,10 @@
 #include <cstring>
 #include <map>
 #include <vector>
-#include <map>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <numeric>
 #include "Util.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ class Searcher
         string docDir;
         string idxDir;
         int searchCount;
-        map<int, int> mp; // <docID, tf_sigma>
+        map<int, vector<int>> mp; // <docID, {tf}>
         map<int, double> scores; // <docID, score>
         int binarySearch(ifstream &d, ifstream &t, const char* term);
         struct CmpByVal{

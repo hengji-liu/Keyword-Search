@@ -20,8 +20,7 @@ void Spimi::processDoc() {
             term = rit->str();
             for (int i = 0; i < term.size(); i++)
                 term[i] = tolower(term[i]);
-            // cout << term << endl;
-            // TODO stopword fileter, stemming
+            Porter2Stemmer::stem(term);
             v.push_back(term);
             accumTermsNum++;
             // write tmp idx file when accumTermsNum exceeds the threshold
@@ -48,7 +47,6 @@ void Spimi::build() {
     for (int i = 0; i < fileNames.size(); i++) {
         in.open((docDir + "/" + fileNames[i]).c_str(),ios::in);
         processDoc();
-        // TODO store <docID, docName>
         docID++;
         in.close();
     }

@@ -25,11 +25,13 @@ int Searcher::search(const char* term) {
 	    	p.read((char*)(&docID), sizeof(int));
 	    	p.read((char*)(&tf), sizeof(int));
 	    	// push to map, same logic as postings
-    		map<int, int>::iterator it = mp.find(docID);
+    		map<int, vector<int>>::iterator it = mp.find(docID);
     		if (it == mp.end()){ // new docID
-        		mp.insert(pair<int, int>(docID, tf));
+                vector<int> v;
+                v.push_back(tf);
+        		mp.insert(pair<int, vector<int>>(docID, v));
     		}else{
-        		mp[docID] += tf;
+        		mp[docID].push_back(tf);
     		}
 	    }
     }
@@ -80,11 +82,15 @@ int Searcher:: binarySearch(ifstream &d, ifstream &t, const char* term){
 
 void Searcher::show() {
 	// rank
-    map<int, int>::iterator it = mp.begin();
+    map<int, vector<int>>::iterator it = mp.begin();
     for (;it != mp.end(); it++) {
         int docID = it->first;
-        double tfsum = -1.0 * it->second; //for descending order
-        scores.insert(pair<int, double>(docID, tfsum/searchCount));
+        vector<int> tfs = it->second;
+        if (searchCount == tfs.size()){ // boolean AND search
+             // -1.0 for descending order and type conversion
+            double tfavg = -1.0 * accumulate(tfs.begin(),tfs.end(), 0) / searchCount;
+            scores.insert(pair<int, double>(docID, tfavg));
+        }
     }
     //sort according to value
     vector<pair<int, double>> scores_vec(scores.begin(), scores.end());

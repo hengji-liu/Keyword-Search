@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include "Spimi.h"
 #include "Searcher.h"
+#include "porter2_stemmer.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ int main(int argc, char* argv[])
     Searcher searcher(docDir, idxDir);
     for (vector<string>::const_iterator iter = terms.cbegin(); iter != terms.cend(); iter++){
         string term = *iter;
+        Porter2Stemmer::stem(term);
         int found = searcher.search(term.c_str());
         if (0 == found){ // term not found
             cout << endl;

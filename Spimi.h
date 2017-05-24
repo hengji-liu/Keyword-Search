@@ -8,6 +8,7 @@
 #include "Dict.h"
 #include "Merger.h"
 #include "Util.h"
+#include "porter2_stemmer.h"
 
 using namespace std;
 
