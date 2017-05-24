@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
         spimi.build();
     }
     // search, rank and output results
-    Searcher searcher(idxDir);
+    Searcher searcher(docDir, idxDir);
     for (vector<string>::const_iterator iter = terms.cbegin(); iter != terms.cend(); iter++){
         string term = *iter;
         int found = searcher.search(term.c_str());

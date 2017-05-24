@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
-
+#include <algorithm>
 using namespace std;
 
 class Util

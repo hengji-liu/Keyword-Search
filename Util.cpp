@@ -11,6 +11,7 @@ vector<string> Util::ls(string path) {
             continue;
         file_names.push_back(dirp->d_name);
     }
+    sort(file_names.begin(), file_names.end());
     return file_names;
 }
 

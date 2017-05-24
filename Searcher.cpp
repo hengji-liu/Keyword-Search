@@ -1,6 +1,6 @@
 ﻿#include "Searcher.h"
 
-Searcher::Searcher(string idxDir): idxDir(idxDir), searchCount(0){}
+Searcher::Searcher(string docDir, string idxDir): docDir(docDir), idxDir(idxDir), searchCount(0){}
 
 int Searcher::search(const char* term) {
     ifstream p(idxDir+"/p", ios::binary|ios::in);
@@ -83,16 +83,21 @@ void Searcher::show() {
     map<int, int>::iterator it = mp.begin();
     for (;it != mp.end(); it++) {
         int docID = it->first;
-        int tfsum = it->second;
-        scores.insert(pair<int, double>(docID,(double)tfsum/searchCount));
+        double tfsum = -1.0 * it->second; //for descending order
+        scores.insert(pair<int, double>(docID, tfsum/searchCount));
     }
+    //sort according to value
+    vector<pair<int, double>> scores_vec(scores.begin(), scores.end());
+    sort(scores_vec.begin(),scores_vec.end(),CmpByVal());
+    // get file names
+    vector<string> fileNames = Util::ls(docDir);
     // print
-    map<int, double>::iterator ite = scores.begin();
-    for (;ite != scores.end(); ite++) {
-        double score = ite->second;
-        int docID = ite->first;
+    int docID;
+    for(int i = 0; i < scores_vec.size(); ++i) {
+    	docID = scores_vec[i].first;
+    	cout << fileNames[docID] << endl;
+    	// cout << scores_vec[i].second << endl;
     }
-    //TODO sort according to value and print file name
-   
+
 }
 
