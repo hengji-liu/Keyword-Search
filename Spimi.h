@@ -1,18 +1,14 @@
 ﻿#ifndef SPIMI_H
 #define SPIMI_H
 
-#include <cstring>
-#include <string>
-#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include <set>
-#include <cstdio>
-#include <cstdlib>
+#include <string>
 #include <regex>
 #include "Dict.h"
 #include "Merger.h"
+#include "Util.h"
+
 using namespace std;
 
 class Spimi

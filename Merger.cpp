@@ -12,77 +12,14 @@ Merger::~Merger()
 
 void Merger::readTerm(ifstream &in, char *term) {
     int termLen =  -1;
+    // cout << "p at "<<in.tellg()<< endl;
     in.read((char*)(&termLen), sizeof(int));
-    if (termLen == -1) { // eof
-        term[0] = 0; 
+    if (in.eof()){
+        term[0] = 0;
         return;
     }
     in.read(term, termLen);
     term[termLen] = 0; // \0 indicates the end of string
-}
-
-void Merger::writeMergedPostings(ifstream &in1, ifstream &in2, int df1, int df2, ofstream &out){
-    int docID1;
-    int docID2;
-    int tf1;
-    int tf2;
-    in1.read((char *)&docID1, sizeof(int));
-    in1.read((char *)&tf1, sizeof(int));
-    in2.read((char *)&docID2, sizeof(int));
-    in2.read((char *)&tf2, sizeof(int));
-    while(df1 > 0 && df2 > 0) {
-        if (docID1 < docID2){
-            df1--;
-            out.write((char*)(&docID1), sizeof(int));
-            out.write((char*)(&tf1), sizeof(int));
-            if (df1 > 0){
-                in1.read((char *)&docID1, sizeof(int));
-                in1.read((char *)&tf1, sizeof(int));
-            }
-         } else if (docID1 > docID2){
-            df2--;
-            out.write((char*)(&docID2), sizeof(int));
-            out.write((char*)(&tf2), sizeof(int));
-            if (df2 >0){
-                in2.read((char *)&docID2, sizeof(int));
-                in2.read((char *)&tf2, sizeof(int));
-            }
-        } else {
-            df1--;
-            df2--;
-            int tf_new = tf1+tf2;
-            out.write((char*)(&docID1), sizeof(int));
-            out.write((char*)(&tf_new), sizeof(int));
-            if (df1 > 0 && df2 > 0){
-                in1.read((char *)&docID1, sizeof(int));
-                in1.read((char *)&tf1, sizeof(int));
-                in2.read((char *)&docID2, sizeof(int));
-                in2.read((char *)&tf2, sizeof(int));
-            }
-        }
-    }
-    if (df1 > 0){
-        out.write((char*)(&docID1), sizeof(int));
-        out.write((char*)(&tf1), sizeof(int));
-        // write the rest of in1
-        if (df1 > 1){
-            int bufsiz= df1*2*sizeof(int);
-            char buff[bufsiz]; // rest {doc id, tf} of this term
-            in1.read(buff, bufsiz);
-            out.write(buff, bufsiz);
-        }
-    }
-    if (df2 > 0){
-        out.write((char*)(&docID2), sizeof(int));
-        out.write((char*)(&tf2), sizeof(int));
-        // write the rest of a2
-        if (df2 > 1){
-            int bufsiz= df2*2*sizeof(int);
-            char buff[bufsiz]; // rest {doc id, tf} of this term
-            in2.read(buff, bufsiz);
-            out.write(buff, bufsiz);
-        }
-    }
 }
 
 void Merger::mergeTwo(const char *file1, const char *file2, const char *outfile) {
@@ -119,16 +56,31 @@ void Merger::mergeTwo(const char *file1, const char *file2, const char *outfile)
             // next loop
             readTerm(in2, term2);
         } else {
+            // because block is defined by terms,
+            // the same docId for a term can be in different blocks,
+            // which makes the new df unknown
+            // utilise a posting push function to deal with this
+            Postings p;
+            int docID;
+            int tf;
             in1.read((char *)&df, sizeof(int));
             in2.read((char *)&df2, sizeof(int));
-            int df_new = df+df2;
-            // write termLen, term, df
+            for (int i = 0; i < df; ++i){
+                in1.read((char *)&docID, sizeof(int));
+                in1.read((char *)&tf, sizeof(int));
+                p.push(docID, tf);
+            }
+            for (int i = 0; i < df2; ++i){
+                in2.read((char *)&docID, sizeof(int));
+                in2.read((char *)&tf, sizeof(int));
+                p.push(docID, tf);
+            }
+            // write termLen, term
             int termLen = strlen(term1);
             out.write((char*)(&termLen), sizeof(int));
-            out.write(term1, termLen);
-            out.write((char*)(&df_new), sizeof(int));
-            // write merged {docID, tf}
-            writeMergedPostings(in1, in2, df, df2, out);
+            out.write(term1, termLen); 
+            // write df and postings           
+            p.writeToFile(out);
             // next loop
             readTerm(in1, term1);
             readTerm(in2, term2);

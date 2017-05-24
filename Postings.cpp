@@ -10,10 +10,6 @@ Postings::~Postings()
     //dtor
 }
 
-int Postings::df(){
-    return p.size();
-}
-
 vector<int> Postings::decode() {
     //TODO
     vector<int> v;
@@ -35,10 +31,13 @@ int Postings::find(int docID) {
 }
 
 void Postings::writeToFile(ofstream &out) {
+    int df = p.size();
+    out.write((char*)(&df), sizeof(int));
     map<int, int>::iterator it = p.begin();
     for (;it != p.end(); it++) {
         int docID = it->first;
         int freq = it->second;
+        // cout << docID << " " << freq << endl;
         out.write((char*)(&docID), sizeof(int));
         out.write((char*)(&freq), sizeof(int));
     }

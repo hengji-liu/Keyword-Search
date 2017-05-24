@@ -1,12 +1,14 @@
 ﻿#ifndef DICT_H
 #define DICT_H
+
 #include <map>
-#include <cstring>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include "Postings.h"
+
 using namespace std;
+
 class Dict
 {
     public:

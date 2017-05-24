@@ -51,12 +51,10 @@ void Dict::writeToFile(ofstream &out) {
         string term = it->first;
         Postings posting = it->second;
         int termLen = term.size();
-        int df = posting.df();
-        // write term length, term and df
+        // write term length, term 
         out.write((char*)(&termLen), sizeof(int));
         out.write(term.c_str(), termLen);
-        out.write((char*)(&df), sizeof(int));
-        // write postings: <docID, tf>
+        // write df and postings: <docID, tf>
         posting.writeToFile(out);
     }
 }
