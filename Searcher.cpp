@@ -1,6 +1,6 @@
 ﻿#include "Searcher.h"
 
-Searcher::Searcher(string idxDir): idxDir(idxDir) {}
+Searcher::Searcher(string idxDir): idxDir(idxDir), searchCount(0){}
 
 int Searcher::search(const char* term) {
     ifstream p(idxDir+"/p", ios::binary|ios::in);
@@ -24,14 +24,12 @@ int Searcher::search(const char* term) {
 	    	int tf;
 	    	p.read((char*)(&docID), sizeof(int));
 	    	p.read((char*)(&tf), sizeof(int));
-	    	// push to map
-    		map<int, vector<int>>::iterator it = mp.find(docID);
+	    	// push to map, same logic as postings
+    		map<int, int>::iterator it = mp.find(docID);
     		if (it == mp.end()){ // new docID
-    			vector<int> v;
-    			v.push_back(tf);
-        		mp.insert(pair<int, vector<int>>(docID, v));
+        		mp.insert(pair<int, int>(docID, tf));
     		}else{
-        		mp[docID].push_back(tf);
+        		mp[docID] += tf;
     		}
 	    }
     }
@@ -39,6 +37,8 @@ int Searcher::search(const char* term) {
     p.close();
     d.close();
     t.close();
+
+    searchCount++;
 
     if (-1 != result){
     	return 1; // found
@@ -78,23 +78,21 @@ int Searcher:: binarySearch(ifstream &d, ifstream &t, const char* term){
     return -1;
 }
 
-void Searcher::rank() {
-
-}
-
 void Searcher::show() {
-	int docID;
-	vector<int> tfs;
-	// cout << "map size: " << mp.size() << endl;
-    map<int, vector<int>>::iterator it = mp.begin();
+	// rank
+    map<int, int>::iterator it = mp.begin();
     for (;it != mp.end(); it++) {
-        docID = it->first;
-        tfs = it->second;
-        cout << docID << " : ";
-	    for (vector<int>::const_iterator iter = tfs.cbegin(); iter != tfs.cend(); iter++){
-	        cout << (*iter) << ", ";
-	    }
-        cout << endl;
+        int docID = it->first;
+        int tfsum = it->second;
+        scores.insert(pair<int, double>(docID,(double)tfsum/searchCount));
     }
+    // print
+    map<int, double>::iterator ite = scores.begin();
+    for (;ite != scores.end(); ite++) {
+        double score = ite->second;
+        int docID = ite->first;
+    }
+    //TODO sort according to value and print file name
+   
 }
 

@@ -19,10 +19,10 @@ class Searcher
     protected:
     private:
         string idxDir;
-        map<int, vector<int>> mp; // <docID, {tf}>
+        int searchCount;
+        map<int, int> mp; // <docID, tf_sigma>
         map<int, double> scores; // <docID, score>
         int binarySearch(ifstream &d, ifstream &t, const char* term);
-        void rank();
     };
 
 #endif // SEARCHER_H
