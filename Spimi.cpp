@@ -3,7 +3,7 @@
 Spimi::Spimi(string docDir, string idxDir):
     docDir(docDir), 
     idxDir(idxDir), 
-    threshold(1024*1024), 
+    threshold(2*1024*1024), 
     docID(0), 
     accumTermsNum(0),
     extractor("[a-zA-Z]{3,}")

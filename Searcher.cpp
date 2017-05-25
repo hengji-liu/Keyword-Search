@@ -87,23 +87,17 @@ void Searcher::show() {
         int docID = it->first;
         vector<int> tfs = it->second;
         if (searchCount == tfs.size()){ // boolean AND search
-             // -1.0 for descending order and type conversion
-            double tfavg = -1.0 * accumulate(tfs.begin(),tfs.end(), 0) / searchCount;
-            scores.insert(pair<int, double>(docID, tfavg));
+            scores.insert(pair<int, int>(docID, accumulate(tfs.begin(),tfs.end(), 0)));
         }
     }
     //sort according to value
-    vector<pair<int, double>> scores_vec(scores.begin(), scores.end());
-    sort(scores_vec.begin(),scores_vec.end(),CmpByVal());
+    stable_sort(scores_vec.begin(),scores_vec.end(),CmpByVal());
     // get file names
     vector<string> fileNames = Util::ls(docDir);
     // print
-    int docID;
     for(int i = 0; i < scores_vec.size(); ++i) {
-    	docID = scores_vec[i].first;
-    	cout << fileNames[docID] << endl;
+    	cout << fileNames[scores_vec[i].first] << endl;
     	// cout << scores_vec[i].second << endl;
     }
-
 }
 

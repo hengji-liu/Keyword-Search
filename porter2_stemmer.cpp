@@ -69,10 +69,10 @@ void Porter2Stemmer::stem(std::string& word)
 
     step1B(word, startR1);
     step1C(word);
-    step2(word, startR1);
-    step3(word, startR1, startR2);
-    step4(word, startR2);
-    step5(word, startR1, startR2);
+    // step2(word, startR1);
+    // step3(word, startR1, startR2);
+    // step4(word, startR2);
+    // step5(word, startR1, startR2);
 
     std::replace(word.begin(), word.end(), 'Y', 'y');
     return;

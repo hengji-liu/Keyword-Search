@@ -24,11 +24,12 @@ class Searcher
         string idxDir;
         int searchCount;
         map<int, vector<int>> mp; // <docID, {tf}>
-        map<int, double> scores; // <docID, score>
+        map<int, int> scores; // <docID, score>
         int binarySearch(ifstream &d, ifstream &t, const char* term);
         struct CmpByVal{
-            bool operator()(const pair<int, double> &l,const pair<int, double> &r){
-                return l.second < r.second;
+            // score descending, if tie, docID ascending
+            bool operator()(const pair<int, int> &l,const pair<int, int> &r){
+                return (l.second > r.second) || (!(l.second > r.second) && (l.first < r.first)) ;
             }
         };
     };
