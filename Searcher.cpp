@@ -91,6 +91,7 @@ void Searcher::show() {
         }
     }
     //sort according to value
+    vector<pair<int, int>> scores_vec(scores.begin(), scores.end());
     stable_sort(scores_vec.begin(),scores_vec.end(),CmpByVal());
     // get file names
     vector<string> fileNames = Util::ls(docDir);
